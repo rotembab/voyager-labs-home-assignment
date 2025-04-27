@@ -1,5 +1,7 @@
+import { IGraphData } from '../interfaces/graph-data.interface';
+
 type GraphCanvasProps = {
-  graphData: any[];
+  graphData: IGraphData;
   width: number;
   height: number;
 };
