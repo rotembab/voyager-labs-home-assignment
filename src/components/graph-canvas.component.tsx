@@ -7,7 +7,11 @@ type GraphCanvasProps = {
 };
 
 const GraphCanvas = ({}: GraphCanvasProps) => {
-  return <></>;
+  return (
+    <div className='container'>
+      <canvas />
+    </div>
+  );
 };
 
 export default GraphCanvas;
