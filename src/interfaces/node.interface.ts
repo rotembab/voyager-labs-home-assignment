@@ -6,4 +6,6 @@ export interface INode {
   //for D3 to add velocity dynamically to the node
   vx?: number;
   vy?: number;
+  // assign different colors to different groups
+  group: number;
 }
