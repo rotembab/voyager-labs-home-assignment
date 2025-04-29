@@ -1,3 +1,4 @@
+import { useMemo, useRef } from 'react';
 import { IGraphData } from '../interfaces/graph-data.interface';
 
 type GraphCanvasProps = {
@@ -6,10 +7,16 @@ type GraphCanvasProps = {
   height: number;
 };
 
-const GraphCanvas = ({}: GraphCanvasProps) => {
+const GraphCanvas = ({ width, height }: GraphCanvasProps) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasContext = useMemo(
+    () => canvasRef.current?.getContext('2d'),
+    [canvasRef.current]
+  );
+
   return (
     <div className='container'>
-      <canvas />
+      <canvas width={`${width}px`} height={`${height}px`} ref={canvasRef} />
     </div>
   );
 };
