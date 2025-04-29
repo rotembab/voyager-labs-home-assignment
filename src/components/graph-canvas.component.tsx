@@ -12,7 +12,7 @@ type GraphCanvasProps = {
   height: number;
 };
 
-const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
+const GraphCanvas = ({ width, height }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasContext = useMemo(
     () => canvasRef.current?.getContext('2d'),
@@ -20,8 +20,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   );
   const color = d3.scaleOrdinal(d3.schemeCategory10);
   //create copies
-  const links = graphData.links.map((d) => ({ ...d }));
-  const nodes = graphData.nodes.map((d) => ({ ...d }));
+  // const links = graphData.links.map((d) => ({ ...d }));
+  // const nodes = graphData.nodes.map((d) => ({ ...d }));
   //create simulation
   // const simulation = d3
   //   .forceSimulation(nodes)
@@ -30,8 +30,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   //     d3.forceLink(links).id((d) => d.id)
   //   )
   //   .force('charge', d3.forceManyBody())
-  //   .force('center', d3.forceCenter(width / 2, height / 2))
-  //   .on('tick', ticked);
+  //   .force('center', d3.forceCenter(width / 2, height / 2));
+  // .on('tick', ticked);
 
   return (
     <div className='container'>
