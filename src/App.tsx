@@ -13,7 +13,7 @@ function App() {
       return {
         source: source.toString(),
         target: target.toString(),
-        value: Math.random() > 0.5 ? 1 : 10, // Random value of 1 or 2
+        value: Math.random() * 10 + 1, // random value between 1 and 10
       };
     }),
   };
