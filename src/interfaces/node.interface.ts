@@ -7,5 +7,6 @@ export interface INode {
   vx?: number;
   vy?: number;
   // assign different colors to different groups
-  group: number;
+  fx?: number; // Fixed x position for dragging
+  fy?: number; // Fixed y position for dragging
 }
