@@ -87,7 +87,12 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         const dx = n.x! - x;
         const dy = n.y! - y;
         console.log(x, y, dx * dx + dy * dy, nodeRadius ** 2);
-        return dx * dx + dy * dy < nodeRadius ** 2;
+        if (dx * dx + dy * dy < nodeRadius ** 2) {
+          return true;
+        } else {
+          setSelectedNode(null);
+          return false;
+        }
       });
     }
 
