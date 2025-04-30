@@ -106,19 +106,23 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
             return getMouseNode(x, y) || null;
           })
           .on('start', (event) => {
-            const node = event.subject as INode;
+            const [x, y] = transformRef.current.invert(
+              d3.pointer(event.sourceEvent, canvas)
+            );
+            const node = getMouseNode(x, y);
             if (node) {
               dragNode.current = node;
               setSelectedNode(node);
-              const [x, y] = transformRef.current.invert([event.x, event.y]);
               node.fx = x;
               node.fy = y;
-              simulation.alphaTarget(0.3).restart();
+              simulationRef.current?.alphaTarget(0.3).restart();
             }
           })
           .on('drag', (event) => {
             if (dragNode.current) {
-              const [x, y] = transformRef.current.invert([event.x, event.y]);
+              const [x, y] = transformRef.current.invert(
+                d3.pointer(event.sourceEvent, canvas)
+              );
               dragNode.current.fx = x;
               dragNode.current.fy = y;
             }
@@ -127,7 +131,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
             if (dragNode.current) {
               dragNode.current.fx = undefined;
               dragNode.current.fy = undefined;
-              simulation.alphaTarget(0);
+              simulationRef.current?.alphaTarget(0);
               dragNode.current = null;
             }
           })
@@ -144,12 +148,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
     return () => {
       simulation.stop();
-      // d3.select(canvas)
-      //   .on('.zoom', null)
-      //   .on('mousedown', null)
-      //   .on('mousemove', null)
-      //   .on('mouseup', null);
-
+      d3.select(canvas);
       d3.select(canvas).on('zoom', null).on('drag', null);
     };
   }, [graphData, width, height]);
