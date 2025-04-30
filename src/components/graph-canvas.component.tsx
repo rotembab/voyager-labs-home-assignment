@@ -142,6 +142,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           .scaleExtent([0.1, 8])
           .on('zoom', (event) => {
             transformRef.current = event.transform;
+            setSelectedNode(null);
             ticked(); // redraw with updated zoom
           })
       );
@@ -156,6 +157,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   return (
     <div className='container'>
       <canvas width={`${width}px`} height={`${height}px`} ref={canvasRef} />
+      <div className='info'>
+        {selectedNode && 'Selected Node ' + selectedNode?.id}
+      </div>
     </div>
   );
 };
