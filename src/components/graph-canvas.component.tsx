@@ -17,6 +17,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const [selectedNode, setSelectedNode] = useState<INode | null>(null);
   const dragNode = useRef<INode | null>(null);
   const transformRef = useRef(d3.zoomIdentity);
+  const nodeRadius = 10;
 
   useEffect(() => {
     //getting the canvas context
@@ -71,7 +72,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
       for (const node of nodes) {
         context.beginPath();
-        context.arc(node.x!, node.y!, 5, 0, 2 * Math.PI);
+        context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
         context.fillStyle = color((node.id ?? '0').toString()) as string;
         context.fill();
         context.strokeStyle = '#fff';
@@ -85,7 +86,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       return nodes.find((n) => {
         const dx = n.x! - x;
         const dy = n.y! - y;
-        return dx * dx + dy * dy < 25; // radius = 5
+        return dx * dx + dy * dy < nodeRadius ** 2; // radius = 5
       });
     }
 

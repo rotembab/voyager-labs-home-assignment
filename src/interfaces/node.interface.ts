@@ -1,5 +1,7 @@
 export interface INode {
   id: string;
+
+  group: number;
   //for D3 to add position dynamically to the node
   x?: number;
   y?: number;
