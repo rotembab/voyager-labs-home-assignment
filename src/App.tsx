@@ -5,19 +5,11 @@ function App() {
     <>
       <GraphCanvas
         graphData={{
-          nodes: [
-            { id: '1' },
-            { id: '2' },
-            { id: '3' },
-            { id: '4' },
-            { id: '5' },
-          ],
+          nodes: [{ id: '1' }, { id: '2' }, { id: '3' }],
           links: [
             { source: '1', target: '2', value: 1 },
-            { source: '1', target: '3', value: 2 },
-            { source: '2', target: '4', value: 1 },
-            { source: '3', target: '5', value: 3 },
-            { source: '4', target: '5', value: 1 },
+            { source: '2', target: '3', value: 1 },
+            { source: '3', target: '1', value: 1 },
           ],
         }}
         width={800}

@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IGraphData } from '../interfaces/graph-data.interface';
 import * as d3 from 'd3';
 import { ILink } from '../interfaces/link.interface';
@@ -55,11 +55,15 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       context.strokeStyle = '#000';
       context.lineWidth = 1;
       context.beginPath();
+
       for (const link of links) {
-        const src = nodes.find((node) => node.id === link.source);
-        const tgt = nodes.find((node) => node.id === link.target);
-        context.moveTo(src?.x!, src?.y!);
-        context.lineTo(tgt?.x!, tgt?.y!);
+        const src = link.source;
+        const tgt = link.target;
+
+        if (isNode(src) && isNode(tgt)) {
+          context.moveTo(src.x!, src.y!);
+          context.lineTo(tgt.x!, tgt.y!);
+        }
       }
       context.stroke();
 
@@ -106,6 +110,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         dragNode.current.fx = x;
         dragNode.current.fy = y;
       }
+    }
+    function isNode(n: any): n is INode {
+      return n && typeof n.x === 'number' && typeof n.y === 'number';
     }
 
     function onMouseUp() {
