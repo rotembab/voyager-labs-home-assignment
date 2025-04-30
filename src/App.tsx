@@ -13,10 +13,11 @@ function App() {
       return {
         source: source.toString(),
         target: target.toString(),
-        value: Math.floor(Math.random() * 5) + 1, // value 1–5
+        value: Math.random() > 0.5 ? 1 : 10, // Random value of 1 or 2
       };
     }),
   };
+  console.log('Graph Data:', graphData);
 
   return (
     <>

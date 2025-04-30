@@ -53,19 +53,19 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
       // Draw links
 
-      context.beginPath();
       for (const link of links) {
         const src = link.source;
         const tgt = link.target;
         const value = link.value;
-        context.strokeStyle = '#999';
-        context.lineWidth = value;
-
         if (isNode(src) && isNode(tgt)) {
           //type guard
           //then freely use src.x and src.y
+          context.beginPath(); // Start a new path for each link
+          context.strokeStyle = '#999';
+          context.lineWidth = value;
           context.moveTo(src.x!, src.y!);
           context.lineTo(tgt.x!, tgt.y!);
+          context.stroke(); // Draw the current link
         }
         context.stroke();
       }
@@ -74,9 +74,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
         context.fillStyle = color((node.id ?? '0').toString()) as string;
-        context.font = '1rem sans-serif';
-        context.fillText(node.id, node.x! + 10, node.y! + 10, 200);
-
+        context.font = '12px sans-serif';
+        context.fillText(node.id, node.x! + 10, node.y! + 10);
         context.fill();
         context.strokeStyle = '#fff';
         context.lineWidth = 1.5;
@@ -89,7 +88,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       return nodes.find((n) => {
         const dx = n.x! - x;
         const dy = n.y! - y;
-        return dx * dx + dy * dy < nodeRadius ** 2; // radius = 5
+        return dx * dx + dy * dy < nodeRadius ** 2;
       });
     }
 
