@@ -86,7 +86,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       return nodes.find((n) => {
         const dx = n.x! - x;
         const dy = n.y! - y;
-        console.log(x, y, dx * dx + dy * dy, nodeRadius ** 2);
         if (dx * dx + dy * dy < nodeRadius ** 2) {
           return true;
         } else {
@@ -147,7 +146,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           .scaleExtent([0.1, 8])
           .on('zoom', (event) => {
             transformRef.current = event.transform;
-            setSelectedNode(null);
             ticked(); // redraw with updated zoom
           })
       );
