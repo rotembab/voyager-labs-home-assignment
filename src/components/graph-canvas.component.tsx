@@ -12,7 +12,6 @@ type GraphCanvasProps = {
 
 const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // const [selectedNode, setSelectedNode] = useState<INode | null>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null);
   const color = d3.scaleOrdinal(d3.schemeCategory10);
   const [selectedNode, setSelectedNode] = useState<INode | null>(null);
@@ -52,20 +51,23 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       context.scale(transformRef.current.k, transformRef.current.k);
 
       // Draw links
-      context.strokeStyle = '#000';
-      context.lineWidth = 1;
-      context.beginPath();
 
+      context.beginPath();
       for (const link of links) {
         const src = link.source;
         const tgt = link.target;
+        const value = link.value;
+        context.strokeStyle = '#000';
+        context.lineWidth = value;
 
         if (isNode(src) && isNode(tgt)) {
+          //type guard
+          //then freely use src.x and src.y
           context.moveTo(src.x!, src.y!);
           context.lineTo(tgt.x!, tgt.y!);
         }
+        context.stroke();
       }
-      context.stroke();
 
       for (const node of nodes) {
         context.beginPath();
