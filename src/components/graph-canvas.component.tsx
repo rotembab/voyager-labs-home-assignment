@@ -90,6 +90,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       ]);
       const node = getMouseNode(x, y);
       if (node) {
+        setSelectedNode(node);
         dragNode.current = node;
         node.fx = node.x;
         node.fy = node.y;
@@ -142,7 +143,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   return (
     <div className='container'>
       <canvas width={`${width}px`} height={`${height}px`} ref={canvasRef} />
-      {'selecetedNode ' + selectedNode?.id}
     </div>
   );
 };
