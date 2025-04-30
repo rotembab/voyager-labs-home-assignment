@@ -58,7 +58,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         const src = link.source;
         const tgt = link.target;
         const value = link.value;
-        context.strokeStyle = '#000';
+        context.strokeStyle = '#999';
         context.lineWidth = value;
 
         if (isNode(src) && isNode(tgt)) {
@@ -74,6 +74,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
         context.fillStyle = color((node.id ?? '0').toString()) as string;
+        context.font = '1rem sans-serif';
+        context.fillText(node.id, node.x! + 10, node.y! + 10, 200);
+
         context.fill();
         context.strokeStyle = '#fff';
         context.lineWidth = 1.5;
