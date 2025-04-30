@@ -13,11 +13,11 @@ type GraphCanvasProps = {
 const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null);
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
   const [selectedNode, setSelectedNode] = useState<INode | null>(null);
   const dragNode = useRef<INode | null>(null);
   const transformRef = useRef(d3.zoomIdentity);
-  const nodeRadius = 10;
+  const nodeRadius = 5;
 
   useEffect(() => {
     //getting the canvas context
@@ -26,7 +26,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
     const context = canvas.getContext('2d');
     if (!context) return;
-
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
     const nodes = graphData.nodes.map((d) => ({ ...d }));
     const links = graphData.links.map((d) => ({ ...d }));
 
@@ -62,7 +62,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           //then freely use src.x and src.y
           context.beginPath(); // Start a new path for each link
           context.strokeStyle = '#999';
-          context.lineWidth = value;
+          context.lineWidth = Math.sqrt(value);
           context.moveTo(src.x!, src.y!);
           context.lineTo(tgt.x!, tgt.y!);
           context.stroke(); // Draw the current link
@@ -73,9 +73,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       for (const node of nodes) {
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
-        context.fillStyle = color((node.id ?? '0').toString()) as string;
-        context.font = '12px sans-serif';
-        context.fillText(node.id, node.x! + 10, node.y! + 10);
+        context.fillStyle = color(node.group.toString());
+        // context.font = '12px sans-serif';
+        // context.fillText(node.id, node.x! + 10, node.y! + 10);
         context.fill();
         context.strokeStyle = '#fff';
         context.lineWidth = 1.5;
