@@ -21,6 +21,7 @@ function App() {
 
   return (
     <>
+      <h1>Graph Visualization</h1>
       <GraphCanvas graphData={data} width={800} height={600} />
     </>
   );

@@ -6,6 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100dvh;
+  text-align: center;
 }
 
 .container {
