@@ -3,6 +3,7 @@ import { IGraphData } from '../interfaces/graph-data.interface';
 import * as d3 from 'd3';
 import { ILink } from '../interfaces/link.interface';
 import { INode } from '../interfaces/node.interface';
+import { getMouseNode, isNode } from '../utils/GraphCanvas.utils';
 
 type GraphCanvasProps = {
   graphData: IGraphData;
@@ -60,7 +61,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
     let ticking = false;
 
-    function ticked() {
+    function ticked(): void {
       if (!ticking) {
         ticking = true;
         requestAnimationFrame(() => {
@@ -69,8 +70,11 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         });
       }
     }
-
-    function draw() {
+    function selectNode(node: INode | null): void {
+      selectedNodeRef.current = node;
+      setSelectedNode(node);
+    }
+    function draw(): void {
       if (!context) return;
       context.save();
 
@@ -113,44 +117,30 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     }
 
     //helper function to identify if  there is a  node under the mouse
-    function getMouseNode(x: number, y: number) {
-      return nodes.find((n) => {
-        const dx = n.x! - x;
-        const dy = n.y! - y;
-        if (dx * dx + dy * dy < nodeRadius ** 2) {
-          return true;
-        } else {
-          selectedNodeRef.current = null;
-          setSelectedNode(null);
-          return false;
-        }
-      });
-    }
+
     //helper function to identify if the object is a node
-    function isNode(n: any): n is INode {
-      return n && typeof n.x === 'number' && typeof n.y === 'number';
-    }
 
     //setting up the event listeners for drag, zoom and pan.
     d3.select(canvas)
       .call(
         d3
           .drag<HTMLCanvasElement, unknown>()
-          .subject(function (event) {
+          .subject(function (
+            event: d3.D3DragEvent<HTMLCanvasElement, unknown, unknown>
+          ) {
             const [x, y] = transformRef.current.invert(
               d3.pointer(event.sourceEvent, canvas)
             );
-            return getMouseNode(x, y) || null;
+            return getMouseNode(x, y, selectNode, nodes, nodeRadius) || null;
           })
           .on('start', (event) => {
             const [x, y] = transformRef.current.invert(
               d3.pointer(event.sourceEvent, canvas)
             );
-            const node = getMouseNode(x, y);
+            const node = getMouseNode(x, y, selectNode, nodes, nodeRadius);
             if (node) {
               dragNode.current = node;
-              setSelectedNode(node);
-              selectedNodeRef.current = node;
+              selectNode(node);
               node.fx = x;
               node.fy = y;
               simulationRef.current?.alphaTarget(0.3).restart();
@@ -178,7 +168,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         d3
           .zoom<HTMLCanvasElement, unknown>()
           .scaleExtent([0.1, 8])
-          .on('zoom', (event: any) => {
+          .on('zoom', (event: d3.D3ZoomEvent<HTMLCanvasElement, unknown>) => {
             transformRef.current = event.transform;
             ticked(); // redraw with updated zoom
           })
