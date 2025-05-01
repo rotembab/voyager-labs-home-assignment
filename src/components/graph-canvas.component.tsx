@@ -58,7 +58,20 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     simulationRef.current = simulation;
 
     //the tick function is called on every tick of the simulation
+
+    let ticking = false;
+
     function ticked() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          draw();
+          ticking = false;
+        });
+      }
+    }
+
+    function draw() {
       if (!context) return;
       context.save();
 
