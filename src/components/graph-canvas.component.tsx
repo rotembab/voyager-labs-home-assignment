@@ -89,7 +89,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           //type guard
           //then freely use src.x and src.y
           context.beginPath(); // Start a new path for each link
-          context.strokeStyle = '#999';
+          context.strokeStyle = '#99999960';
           context.lineWidth = Math.sqrt(value);
           context.moveTo(src.x!, src.y!);
           context.lineTo(tgt.x!, tgt.y!);
