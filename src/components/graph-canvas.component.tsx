@@ -3,7 +3,6 @@ import { IGraphData } from '../interfaces/graph-data.interface';
 import * as d3 from 'd3';
 import { ILink } from '../interfaces/link.interface';
 import { INode } from '../interfaces/node.interface';
-import { throttle } from '../utils/general.utils';
 
 type GraphCanvasProps = {
   graphData: IGraphData;
@@ -157,18 +156,15 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
               simulationRef.current?.alphaTarget(0.3).restart();
             }
           })
-          .on(
-            'drag',
-            throttle((event: any) => {
-              if (dragNode.current) {
-                const [x, y] = transformRef.current.invert(
-                  d3.pointer(event.sourceEvent, canvas)
-                );
-                dragNode.current.fx = x;
-                dragNode.current.fy = y;
-              }
-            }, 16) // throttle the drag event to 16ms  which is nearly 60fps
-          )
+          .on('drag', (event: any) => {
+            if (dragNode.current) {
+              const [x, y] = transformRef.current.invert(
+                d3.pointer(event.sourceEvent, canvas)
+              );
+              dragNode.current.fx = x;
+              dragNode.current.fy = y;
+            }
+          })
           .on('end', () => {
             if (dragNode.current) {
               dragNode.current.fx = undefined;
@@ -182,13 +178,10 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         d3
           .zoom<HTMLCanvasElement, unknown>()
           .scaleExtent([0.1, 8])
-          .on(
-            'zoom',
-            throttle((event: any) => {
-              transformRef.current = event.transform;
-              ticked(); // redraw with updated zoom
-            }, 16) // throttle the zoom event to 16ms which is nearly 60fps
-          )
+          .on('zoom', (event: any) => {
+            transformRef.current = event.transform;
+            ticked(); // redraw with updated zoom
+          })
       );
 
     //cleaning up the event listeners
