@@ -13,10 +13,10 @@ type GraphCanvasProps = {
 const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null);
-  const [selectedNode, setSelectedNode] = useState<INode | null>(null); //for reactive state and display
-  const selectedNodeRef = useRef<INode | null>(null); //for remembering the selected node
+  const [selectedNode, setSelectedNode] = useState<INode | null>(null); //for reactive display of selected node
+  const selectedNodeRef = useRef<INode | null>(null); //for remembering the selected node between ticks
   const dragNode = useRef<INode | null>(null);
-  const transformRef = useRef(d3.zoomIdentity);
+  const transformRef = useRef(d3.zoomIdentity); //for zoom and pan
   const nodeRadius = 5;
 
   useEffect(() => {
@@ -26,11 +26,14 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
     const context = canvas.getContext('2d');
     if (!context) return;
+    //setting color pallette
     const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    //coping the existing graph data
     const nodes = graphData.nodes.map((d) => ({ ...d }));
     const links = graphData.links.map((d) => ({ ...d }));
 
-    // create simulation
+    // creating simulation
 
     const simulation = d3
       .forceSimulation(nodes)
@@ -44,9 +47,12 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
     simulationRef.current = simulation;
 
+    //the tick function is called on every tick of the simulation
     function ticked() {
       if (!context) return;
       context.save();
+
+      //initializing the canvas for drawing
       context.clearRect(0, 0, width, height);
       context.translate(transformRef.current.x, transformRef.current.y);
       context.scale(transformRef.current.k, transformRef.current.k);
@@ -70,6 +76,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         context.stroke();
       }
 
+      // Draw nodes
       for (const node of nodes) {
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
@@ -83,6 +90,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       context.restore();
     }
 
+    //helper function to identify if  there is a  node under the mouse
     function getMouseNode(x: number, y: number) {
       return nodes.find((n) => {
         const dx = n.x! - x;
@@ -96,11 +104,12 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         }
       });
     }
-
+    //helper function to identify if the object is a node
     function isNode(n: any): n is INode {
       return n && typeof n.x === 'number' && typeof n.y === 'number';
     }
 
+    //setting up the event listeners for drag, zoom and pan.
     d3.select(canvas)
       .call(
         d3
@@ -153,6 +162,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           })
       );
 
+    //cleaning up the event listeners
     return () => {
       simulation.stop();
       d3.select(canvas);
