@@ -100,13 +100,13 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
       // Draw nodes
       for (const node of nodes) {
+        const isSelected = selectedNodeRef.current?.id === node.id;
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
         context.fillStyle = color(node.group.toString());
         context.fill();
-        context.strokeStyle =
-          selectedNodeRef.current?.id === node.id ? 'yellow' : '#fff';
-        context.lineWidth = selectedNodeRef.current?.id === node.id ? 3 : 1.5;
+        context.strokeStyle = isSelected ? 'yellow' : '#fff';
+        context.lineWidth = isSelected ? 3 : 1.5;
         context.stroke();
       }
       context.restore();
