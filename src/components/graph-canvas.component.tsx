@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { IGraphData } from '../interfaces/graph-data.interface';
 import * as d3 from 'd3';
 import { ILink } from '../interfaces/link.interface';
 import { INode } from '../interfaces/node.interface';
+import { throttle } from '../utils/general.utils';
 
 type GraphCanvasProps = {
   graphData: IGraphData;
@@ -19,6 +20,19 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const transformRef = useRef(d3.zoomIdentity); //for zoom and pan
   const nodeRadius = 5;
 
+  /*
+   * copying the nodes and links from the graphData to avoid mutating the original data,
+   * plus using memoization to avoid unnecessary re-calculations
+   */
+  const nodes = useMemo(
+    () => graphData.nodes.map((d) => ({ ...d })),
+    [graphData]
+  );
+  const links = useMemo(
+    () => graphData.links.map((d) => ({ ...d })),
+    [graphData]
+  );
+
   useEffect(() => {
     //getting the canvas context
     const canvas = canvasRef.current;
@@ -28,10 +42,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     if (!context) return;
     //setting color pallette
     const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    //coping the existing graph data
-    const nodes = graphData.nodes.map((d) => ({ ...d }));
-    const links = graphData.links.map((d) => ({ ...d }));
 
     // creating simulation
 
@@ -134,15 +144,18 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
               simulationRef.current?.alphaTarget(0.3).restart();
             }
           })
-          .on('drag', (event) => {
-            if (dragNode.current) {
-              const [x, y] = transformRef.current.invert(
-                d3.pointer(event.sourceEvent, canvas)
-              );
-              dragNode.current.fx = x;
-              dragNode.current.fy = y;
-            }
-          })
+          .on(
+            'drag',
+            throttle((event: any) => {
+              if (dragNode.current) {
+                const [x, y] = transformRef.current.invert(
+                  d3.pointer(event.sourceEvent, canvas)
+                );
+                dragNode.current.fx = x;
+                dragNode.current.fy = y;
+              }
+            }, 16) // throttle the drag event to 16ms  which is nearly 60fps
+          )
           .on('end', () => {
             if (dragNode.current) {
               dragNode.current.fx = undefined;
@@ -156,10 +169,13 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         d3
           .zoom<HTMLCanvasElement, unknown>()
           .scaleExtent([0.1, 8])
-          .on('zoom', (event) => {
-            transformRef.current = event.transform;
-            ticked(); // redraw with updated zoom
-          })
+          .on(
+            'zoom',
+            throttle((event: any) => {
+              transformRef.current = event.transform;
+              ticked(); // redraw with updated zoom
+            }, 16) // throttle the zoom event to 16ms which is nearly 60fps
+          )
       );
 
     //cleaning up the event listeners
