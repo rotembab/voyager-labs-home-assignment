@@ -16,4 +16,4 @@ yarn && yarn dev
 
 2. **Open Browser**
 
-Go to → http://localhost:5173/
+**Go to → http://localhost:5173/**
