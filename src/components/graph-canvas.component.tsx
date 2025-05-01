@@ -13,8 +13,8 @@ type GraphCanvasProps = {
 const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null);
-
-  const [selectedNode, setSelectedNode] = useState<INode | null>(null);
+  const [selectedNode, setSelectedNode] = useState<INode | null>(null); //for reactive state and display
+  const selectedNodeRef = useRef<INode | null>(null); //for remembering the selected node
   const dragNode = useRef<INode | null>(null);
   const transformRef = useRef(d3.zoomIdentity);
   const nodeRadius = 5;
@@ -73,7 +73,10 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       for (const node of nodes) {
         context.beginPath();
         context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
-        context.fillStyle = color(node.group.toString());
+        context.fillStyle =
+          selectedNodeRef.current?.id === node.id
+            ? 'red'
+            : color(node.group.toString());
         context.fill();
         context.strokeStyle = '#fff';
         context.lineWidth = 1.5;
@@ -89,6 +92,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         if (dx * dx + dy * dy < nodeRadius ** 2) {
           return true;
         } else {
+          selectedNodeRef.current = null;
           setSelectedNode(null);
           return false;
         }
@@ -117,6 +121,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
             if (node) {
               dragNode.current = node;
               setSelectedNode(node);
+              selectedNodeRef.current = node;
               node.fx = x;
               node.fy = y;
               simulationRef.current?.alphaTarget(0.3).restart();
