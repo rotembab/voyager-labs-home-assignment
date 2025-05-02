@@ -135,12 +135,22 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           .subject(function (
             event: d3.D3DragEvent<HTMLCanvasElement, unknown, unknown>
           ) {
+            /*
+             * Gets the mouse position in the canvas then transforms it to the graph coordinates with
+             * the current zoom transform.
+             */
             const [x, y] = transformRef.current.invert(
               d3.pointer(event.sourceEvent, canvas)
             );
+            // Select the node under the mouse
             return getMouseNode(x, y, selectNode, nodes, nodeRadius) || null;
           })
           .on('start', (event) => {
+            /*
+             * Gets the mouse position in the canvas then transforms it to the graph coordinates with
+             * the current zoom transform.
+             */
+
             const [x, y] = transformRef.current.invert(
               d3.pointer(event.sourceEvent, canvas)
             );
@@ -155,6 +165,10 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           })
           .on('drag', (event: any) => {
             if (dragNode.current) {
+              /*
+               * Gets the mouse position in the canvas then transforms it to the graph coordinates with
+               * the current zoom transform.
+               */
               const [x, y] = transformRef.current.invert(
                 d3.pointer(event.sourceEvent, canvas)
               );
