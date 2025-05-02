@@ -93,8 +93,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
 
       //Initializing the canvas for drawing
       context.clearRect(0, 0, width, height); // Clear the canvas
-      context.translate(transformRef.current.x, transformRef.current.y);
-      context.scale(transformRef.current.k, transformRef.current.k);
+      context.translate(transformRef.current.x, transformRef.current.y); // Translate to the current pan position
+      context.scale(transformRef.current.k, transformRef.current.k); // Scale to the current zoom level
 
       // Draw links
       for (const link of links) {
@@ -107,8 +107,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           context.beginPath(); // Start a new path for each link
           context.strokeStyle = '#99999960';
           context.lineWidth = Math.sqrt(value);
-          context.moveTo(src.x!, src.y!);
-          context.lineTo(tgt.x!, tgt.y!);
+          context.moveTo(src.x!, src.y!); //Start from the source node x and y
+          context.lineTo(tgt.x!, tgt.y!); //End at the target node x and y
           context.stroke(); // Draw the current link
         }
       }
@@ -117,7 +117,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       for (const node of nodes) {
         const isSelected = selectedNodeRef.current?.id === node.id;
         context.beginPath();
-        context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
+        context.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI); // Draw a circle
         context.fillStyle = color(node.group.toString());
         context.fill();
         context.strokeStyle = isSelected ? 'yellow' : '#fff';
@@ -127,7 +127,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       context.restore();
     }
 
-    //Setting up the event listeners for Drag, Zoom and Pan.
+    //Setting up the event listeners for Drag, Zoom and Pan on the Canvas.
     d3.select(canvas)
       .call(
         d3
@@ -157,7 +157,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
             const node = getMouseNode(x, y, selectNode, nodes, nodeRadius);
             if (node) {
               dragNode.current = node;
-              selectNode(node);
               node.fx = x;
               node.fy = y;
               simulationRef.current?.alphaTarget(0.3).restart();
@@ -198,7 +197,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     //Cleaning up the event listeners when the component unmounts
     return () => {
       simulation.stop();
-      d3.select(canvas);
       d3.select(canvas).on('zoom', null).on('drag', null);
     };
   }, [graphData, width, height]);
