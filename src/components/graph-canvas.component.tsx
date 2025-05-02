@@ -33,11 +33,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     [graphData]
   );
 
-  /*
-   * Using useEffect to run the simulation and draw the graph after the component mounts
-   * (guaranteed access to the canvas)
-   */
-
+  // Using useEffect to run the simulation and draw the graph after the component mounts
   useEffect(() => {
     //Getting the canvas context
     const canvas = canvasRef.current;
@@ -49,7 +45,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     //Setting color pallette
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // Creating the simulation
+    //Creating the simulation
 
     const simulation = d3
       .forceSimulation(nodes)
