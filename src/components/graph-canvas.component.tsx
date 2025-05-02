@@ -54,9 +54,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         'link',
         d3.forceLink<INode, ILink>(links).id((d) => d.id)
       )
-      .force('charge', d3.forceManyBody())
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .on('tick', ticked);
+      .force('charge', d3.forceManyBody()) //Simulate gravity
+      .force('center', d3.forceCenter(width / 2, height / 2)) //Force to center of the canvas
+      .on('tick', ticked); //Call ticked function on every simulation tick
 
     // Save the simulation to the ref
     simulationRef.current = simulation;
