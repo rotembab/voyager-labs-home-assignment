@@ -13,16 +13,17 @@ type GraphCanvasProps = {
 
 const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null); // For remembering the simulation between ticks
+  const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null); // For remembering the simulation between ticks and re-renders
   const [selectedNode, setSelectedNode] = useState<INode | null>(null); //For reactive display of selected node
-  const selectedNodeRef = useRef<INode | null>(null); //For remembering the selected node between ticks
-  const dragNode = useRef<INode | null>(null); //For remembering the dragged node between ticks
-  const transformRef = useRef(d3.zoomIdentity); //For remembering the zoom / pan  transform between ticks
+  const selectedNodeRef = useRef<INode | null>(null); //For remembering the selected node between ticks and re-renders
+  const dragNode = useRef<INode | null>(null); //For remembering the dragged node between ticks and re-renders
+  const transformRef = useRef(d3.zoomIdentity); //For remembering the zoom / pan  transform between ticks and re-renders
   const nodeRadius = 5;
 
   /*
-   * Copying the nodes and links from the graphData to avoid mutating the original data,
-   * plus using memoization to avoid unnecessary re-calculations
+   * Copying the nodes and links from the graphData to avoid mutating the original data.
+   * useMemo ensures these copies are only recreated when graphData changes,
+   * preventing unnecessary recalculations and improving performance.
    */
   const nodes = useMemo(
     () => graphData.nodes.map((d) => ({ ...d })),
@@ -33,7 +34,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     [graphData]
   );
 
-  //Using useEffect to run the simulation and draw the graph after the component mounts
+  // Run the simulation and draw the graph after the component mounts
+
   useEffect(() => {
     //Getting the canvas context
     const canvas = canvasRef.current;
@@ -45,8 +47,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     //Setting color pallette
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    //Creating the simulation
-
+    // Create the simulation
     const simulation = d3
       .forceSimulation(nodes)
       .force(
@@ -57,13 +58,13 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
       .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', ticked);
 
-    //Saving the simulation to the ref
+    // Save the simulation to the ref
     simulationRef.current = simulation;
 
-    //The tick function is called on every tick of the simulation
-
+    // Flag to throttle animation frames
     let ticking = false;
 
+    // Called on every simulation tick
     function ticked(): void {
       if (!ticking) {
         ticking = true;
@@ -79,13 +80,13 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         });
       }
     }
-    //Helper function to select a node
+    //Helper function to select a node and update state + ref
     function selectNode(node: INode | null): void {
       selectedNodeRef.current = node;
       setSelectedNode(node);
     }
 
-    //The actual drawing function
+    // Main drawing function
     function draw(): void {
       if (!context) return;
       context.save();
@@ -110,7 +111,6 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           context.lineTo(tgt.x!, tgt.y!);
           context.stroke(); // Draw the current link
         }
-        context.stroke();
       }
 
       // Draw nodes
