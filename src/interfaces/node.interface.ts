@@ -1,7 +1,7 @@
 export interface INode {
   id: string;
 
-  group: number; //For D3 coloring
+  group: number; //Group nodes together and color them with the same color
 
   //For D3 to add position dynamically to the node
   x?: number;
