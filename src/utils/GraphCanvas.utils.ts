@@ -1,9 +1,11 @@
 import { INode } from '../interfaces/node.interface';
 
+//Type guard to check if the object is a node
 export function isNode(n: any): n is INode {
   return n && typeof n.x === 'number' && typeof n.y === 'number';
 }
 
+// Detect if the mouse is over a node
 export function getMouseNode(
   x: number,
   y: number,
