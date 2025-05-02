@@ -73,6 +73,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
            * This is a throttling technique to avoid too many redraws.
            * It will only redraw when the browser is ready to do so.
            * On each frame, we will call only once the draw function.
+           * Because we use requestAnimationFrame, there is no need to use throttle.
            */
 
           draw();
