@@ -33,8 +33,9 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     [graphData]
   );
 
-  /* Using useEffect to run the simulation and draw the graph after the component mounts
-   *   (guaranteed access to the canvas)
+  /*
+   * Using useEffect to run the simulation and draw the graph after the component mounts
+   * (guaranteed access to the canvas)
    */
 
   useEffect(() => {
