@@ -33,7 +33,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
     [graphData]
   );
 
-  // Using useEffect to run the simulation and draw the graph after the component mounts
+  //Using useEffect to run the simulation and draw the graph after the component mounts
   useEffect(() => {
     //Getting the canvas context
     const canvas = canvasRef.current;
@@ -71,6 +71,7 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           /*
            * This is a throttling technique to avoid too many redraws.
            * It will only redraw when the browser is ready to do so.
+           * On each frame, we will call only once the draw function.
            */
 
           draw();
@@ -100,8 +101,8 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
         const tgt = link.target;
         const value = link.value;
         if (isNode(src) && isNode(tgt)) {
-          //type guard
-          //then freely use src.x and src.y
+          //Type guard
+          //Then freely use src.x and src.y
           context.beginPath(); // Start a new path for each link
           context.strokeStyle = '#99999960';
           context.lineWidth = Math.sqrt(value);
