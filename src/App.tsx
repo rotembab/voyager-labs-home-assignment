@@ -1,5 +1,4 @@
 import GraphCanvas from './components/graph-canvas.component';
-
 // d3 example data
 import data from './data/data.json';
 
