@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { IGraphData } from '../interfaces/graph-data.interface';
 import * as d3 from 'd3';
 import { ILink } from '../interfaces/link.interface';
@@ -212,4 +212,4 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
   );
 };
 
-export default GraphCanvas;
+export default memo(GraphCanvas);
