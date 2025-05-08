@@ -9,9 +9,15 @@ type GraphCanvasProps = {
   graphData: IGraphData;
   width: number; //In pixels
   height: number; //In pixels
+  returnToPosAfterDrag?: boolean; //If true, the node will return to its original position after dragging
 };
 
-const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
+const GraphCanvas = ({
+  width,
+  height,
+  graphData,
+  returnToPosAfterDrag = true,
+}: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null); // For remembering the simulation between ticks and re-renders
   const [selectedNode, setSelectedNode] = useState<INode | null>(null); //For reactive display of selected node
@@ -178,8 +184,10 @@ const GraphCanvas = ({ width, height, graphData }: GraphCanvasProps) => {
           })
           .on('end', () => {
             if (dragNode.current) {
-              dragNode.current.fx = undefined;
-              dragNode.current.fy = undefined;
+              if (returnToPosAfterDrag) {
+                dragNode.current.fx = undefined; //remove this line to disable the node getting back to its original position
+                dragNode.current.fy = undefined; //remove this line to disable the node getting back to its original position
+              }
               simulationRef.current?.alphaTarget(0);
               dragNode.current = null;
             }
