@@ -10,6 +10,7 @@ type GraphCanvasProps = {
   width: number; //In pixels
   height: number; //In pixels
   returnToPosAfterDrag?: boolean; //If true, the node will return to its original position after dragging
+  nodeRadius?: number; //Radius of the node circle in pixels, default is 5
 };
 
 const GraphCanvas = ({
@@ -17,6 +18,7 @@ const GraphCanvas = ({
   height,
   graphData,
   returnToPosAfterDrag = true,
+  nodeRadius = 5, //Default radius for nodes
 }: GraphCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<INode, ILink> | null>(null); // For remembering the simulation between ticks and re-renders
@@ -24,7 +26,7 @@ const GraphCanvas = ({
   const selectedNodeRef = useRef<INode | null>(null); //For remembering the selected node between ticks and re-renders
   const dragNode = useRef<INode | null>(null); //For remembering the dragged node between ticks and re-renders
   const transformRef = useRef(d3.zoomIdentity); //For remembering the zoom / pan  transform between ticks and re-renders
-  const nodeRadius = 5;
+
 
   /*
    * Copying the nodes and links from the graphData to avoid mutating the original data.
