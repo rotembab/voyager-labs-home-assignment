@@ -187,8 +187,8 @@ const GraphCanvas = ({
           .on('end', () => {
             if (dragNode.current) {
               if (returnToPosAfterDrag) {
-                dragNode.current.fx = undefined; //remove this line to disable the node getting back to its original position
-                dragNode.current.fy = undefined; //remove this line to disable the node getting back to its original position
+                dragNode.current.fx = undefined;
+                dragNode.current.fy = undefined; 
               }
               simulationRef.current?.alphaTarget(0);
               dragNode.current = null;
